@@ -1,12 +1,43 @@
 def main():
     f = open("input/day3.txt", "r")
     matrix = []
-    digits = []
-    partNumbers = []
     for l in [x.rstrip() for x in f]:
         matrix.append(list(l))
 
-    # Record all digit positions
+    digits = findAllDigits(matrix)
+
+    # Search for gears
+    gearPartNumbers = []
+    for x, row in enumerate(matrix):
+        for y, col in enumerate(row):
+            if col == "*":
+                gear = calculateGear(x, y, matrix, digits)
+                if gear:
+                    gearPartNumbers.append(gear)
+    print(sum(gearPartNumbers))
+
+
+# If not a gear return False otherwise returns product of gear part numbers
+def calculateGear(x, y, matrix, digits):
+    digitIndexes = dict()
+    for coord in getSorroundCoord(x, y, len(matrix)):
+        for i in range(len(digits)):
+            for j in digits[i]:
+                if coord == j:
+                    digitIndexes[i] = True
+    if len(digitIndexes.keys()) == 2:
+        # get product of gear's 2 part numbers
+        product = 1
+        for num in [getValue(digits[i], matrix) for i in digitIndexes.keys()]:
+            product *= num
+        return product
+    else:
+        return False
+
+
+# returns e.g [[[0,1], [0,2]], [[5,6], [5,7]]]
+def findAllDigits(matrix):
+    digits = []
     inDigit = False
     tempDigit = []
     for x, row in enumerate(matrix):
@@ -21,20 +52,7 @@ def main():
                 digits.append(tempDigit)
                 tempDigit = []
                 inDigit = False
-
-    # Check if digits are part numbers
-    for numList in digits:
-        if isPartNumber(numList, matrix):
-            partNumbers.append(getValue(numList, matrix))
-    print(sum(partNumbers))
-
-
-def isPartNumber(numList, matrix):
-    for i in numList:
-        for j in getSorroundCoord(i[0], i[1], len(matrix)):
-            if isSymbol(matrix[j[0]][j[1]]):
-                return True
-    return False
+    return digits
 
 
 def isSymbol(d):
