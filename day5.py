@@ -25,10 +25,28 @@ def main():
     farmMap = []
 
     # navigate through maps to get location
+    print(seeds)
     locations = []
     for s in seeds:
         for m in maps:
             s = getMappedValue(s, m)
+        locations.append(s)
+    print(min(locations))
+
+    # part 2
+    newSeeds = {}
+    for i in range(0, len(seeds), 2):
+        for s in range(seeds[i], seeds[i] + seeds[i + 1]):
+            newSeeds[s] = True
+    print(newSeeds.keys())
+
+    # navigate through maps to get location
+    locations = []
+    for s in newSeeds:
+        print(f"{s=}", end=" ")
+        for m in maps:
+            s = getMappedValue(s, m)
+        print(s)
         locations.append(s)
     print(min(locations))
 
