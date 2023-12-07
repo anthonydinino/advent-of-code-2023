@@ -1,3 +1,6 @@
+import threading
+
+
 def main():
     f = open("input/day6.txt", "r")
     times = []
@@ -17,6 +20,26 @@ def main():
         res.append(len(ans))
         ans = []
     print(getProd(res))
+
+    # day 2
+    ans = res = []
+    time = joinList(times)
+    distance = joinList(distances)
+    print(calculateAns(time, distance))
+
+
+def calculateAns(time, distance):
+    ans = res = []
+    print(time, distance)
+    for j in range(1, time):
+        if getDistance(j, time) > distance:
+            ans.append(j)
+        res.append(len(ans))
+    return getProd(res)
+
+
+def joinList(l):
+    return int("".join([str(x) for x in l]))
 
 
 def getDistance(time, target):
